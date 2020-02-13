@@ -19,6 +19,20 @@ def tensor2imgs(tensor, mean=(0, 0, 0), std=(1, 1, 1), to_rgb=True):
 
 
 def multi_apply(func, *args, **kwargs):
+    """
+        Apply a function to multiple images in a batch,
+        obtaining an iterable of `((res_0_0, res_1_0, ..., res_M_0), ..., (res_0_N, ..., res_M_N))`,
+        where `res_j_i` denotes the j-th result from the i-th image. Next, reorganize the results
+        into a tuple of (list[res_0], list[res_1], ... , list[res_M])
+
+        Args:
+            func: function applied to a single image
+            *args: arguments of the function, e.g, list of images
+            **kwargs: keyword arguments of the function
+
+        Returns: a tuple of (list[res_0], list[res_1], ... , list[res_M])
+
+        """
     pfunc = partial(func, **kwargs) if kwargs else func
     map_results = map(pfunc, *args)
     return tuple(map(list, zip(*map_results)))
